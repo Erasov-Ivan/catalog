@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Aldrich&display=swap" rel="stylesheet">
+    <link href="{{url_for('templates', path='css/styles.css')}}" rel="stylesheet">
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="col-12">
+            <h1 class="text-center text-black font-family: MainFont">Catalog Editor</h1>
+          </div>
+        </div>
+      </div>
+    </header>
+    <windows>
+      <div class="container">
+        <div class="row Row1">
+          <div class="col">
+            <h2 class="text-center text-black">Catalogs</h2>
+          </div>
+          <div class="col">
+            <h2 class="text-center text-black">Items</h2>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <select class="form-select" onchange= "window.location.href = this.options[this.selectedIndex].value" size={{catalogs|length+1}} multiple aria-label="multiple select example">
+              {% if selected_catalog_id == 0 %}
+                <option selected value = "http://localhost:50120/CatalogEditor/ItemList?catalog_id=0">All Items:</option>
+              {% else %}
+                <option value = "http://localhost:50120/CatalogEditor/ItemList?catalog_id=0">All Items:</option>
+              {% endif %}
+
+              {% for id, name in catalogs%}
+                {% if id == selected_catalog_id %}
+                  <option selected value = "http://localhost:50120/CatalogEditor/ItemList?catalog_id={{id}}">{{id}} {{name}}</option>
+                {% else %}
+                  <option value = "http://localhost:50120/CatalogEditor/ItemList?catalog_id={{id}}">{{id}} {{name}}</option> 
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <div id="carouselExample" class="carousel slide">
+              <div class="carousel-indicators indicators">
+                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                {% for i in range(1, page_num) %}
+                  <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="{{i}}"  aria-label="Slide {{i+1}}"></button>
+                {% endfor %}
+              </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <table class="table align-middle">
+                    <thead>
+                      <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Picture</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for id, name, description, price, picture_url in items[0]%}
+                        <tr>
+                          <th scope="row">{{id}}</th>
+                          <td>
+                            <img src={{picture_url}} width="50" height="50">
+                          </td>
+                          <td>{{name}}</td>
+                          <td>{{price}}</td>
+                          <td>{{description}}</td> 
+                        </tr>
+                      {% endfor %} 
+                    </tbody>
+                  </table>
+                </div>
+                {% for i in range(1, page_num) %}
+                  <div class="carousel-item">
+                    <table class="table align-middle">
+                      <thead>
+                        <tr>
+                          <th scope="col">Id</th>
+                          <th scope="col">Picture</th>
+                          <th scope="col">Name</th>
+                          <th scope="col">Price</th>
+                          <th scope="col">Description</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for id, name, description, price, picture_url in items[i]%}
+                          <tr>
+                            <th scope="row">{{id}}</th>
+                            <td>
+                              <img src={{picture_url}} width="50" height="50">
+                            </td>
+                            <td>{{name}}</td>
+                            <td>{{price}}</td>
+                            <td>{{description}}</td> 
+                          </tr>
+                        {% endfor %} 
+                      </tbody>
+                    </table>
+                  </div>
+                {% endfor %}
+              </div>
+              <button class="carousel-control-prev carusel" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="false"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next carusel" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="false"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="dropdown">
+              <div class="d-grid gap-2 col-12 mx-auto">
+                <button type="button" class="btn Button1 dropdown-toggle Button3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                  New Catalog
+                </button>
+                <form class="dropdown-menu p-4">
+                  <div class="mb-3">
+                    <label for="CatalogForm" class="form-label">Catalog Name</label>
+                    <input type="text" class="form-control" id="CatalogForm">
+                  </div>
+                  <button type="button" class="btn Button1", onclick="new_catalog()">Create</button>
+                </form>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="row">
+              <div class="d-grid gap-1 col-12">
+                <button type="button" class="btn Button1 dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+                  New Item
+                </button>
+                <form class="dropdown-menu p-4">
+                  <div class="mb-3">
+                    <label for="ItemName" class="form-label">Name</label>
+                    <input type="text" class="form-control" id="ItemName">
+                  </div>
+                  <div class="mb-3">
+                    <label for="ItemPrice" class="form-label">Price</label>
+                    <input type="text" class="form-control" id="ItemPrice">
+                  </div>
+                  <div class="mb-3">
+                    <label for="ItemDescription" class="form-label">Description</label>
+                    <input type="text" class="form-control" id="ItemDescription">
+                  </div>
+                  <div class="mb-3">
+                    <label for="ItemPictureUrl" class="form-label">Picture Url</label>
+                    <input type="text" class="form-control" id="ItemPictureUrl", placeholder="None">
+                  </div>
+                  <div class="mb-3">
+                    <label for="CatalogId" class="form-label">Catalog</label>
+                    <select class="form-select" id="Catalog_id">
+                      {% if selected_catalog_id == 0 %}
+                        <option selected value = "0">All Items:</option>
+                      {% else %}
+                        <option value = "0">All Items:</option>
+                      {% endif %}
+
+                      {% for id, name in catalogs%}
+                        {% if id == selected_catalog_id %}
+                          <option selected value = {{id}}>{{id}} {{name}}</option>
+                        {% else %}
+                          <option value = {{id}}>{{id}} {{name}}</option> 
+                        {% endif %}
+                      {% endfor %}
+                    </select>
+                  </div>
+                  <button type="button" class="btn Button1", onclick="new_item()">Create</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row Row3">
+          <div class="col">
+            <select class="form-select" id="ACatalogs" onchange= "window.location.href = 'http://localhost:50120/CatalogEditor/ItemsInOtherCatalogs?catalog_id=' + this.options[this.selectedIndex].value">
+              {% if selected_Acatalog_id == 0 %}
+                <option selected value = "0">Select Catalog:</option>
+              {% else %}
+                <option value = "0">Select Catalog:</option>
+              {% endif %}
+
+              {% for id, name in catalogs%}
+                {% if id == selected_Acatalog_id %}
+                  <option selected value = {{id}}>{{id}} {{name}}</option>
+                {% else %}
+                  <option value = {{id}}>{{id}} {{name}}</option> 
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <select class="form-select" id="AItems" ">
+              <option selected value="0">Select Item</option>
+              {% for id, name, description, price, picture_url in Aitems %}
+                <option value = {{id}}>{{id}} {{name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <div class="d-grid gap-2 col-12 mx-auto">
+              <button type="button" class="btn Button2", onclick="new_assosiation()">Add Item to Catalog</button>
+            </div>
+          </div>
+        </div>
+        <div class="row Row4">
+          <div class="col">
+            <select class="form-select" id="ACatalogsDel" onchange= "window.location.href = 'http://localhost:50120/CatalogEditor/AItemsInCatalog?catalog_id=' + this.options[this.selectedIndex].value">
+              {% if selected_Acatalog_id == 0 %}
+                <option selected value = "0">Select Catalog:</option>
+              {% else %}
+                <option value = "0">Select Catalog:</option>
+              {% endif %}
+
+              {% for id, name in catalogs%}
+                {% if id == selected_Acatalog_id %}
+                  <option selected value = {{id}}>{{id}} {{name}}</option>
+                {% else %}
+                  <option value = {{id}}>{{id}} {{name}}</option> 
+                {% endif %}
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <select class="form-select" id="AItemsDel" ">
+              <option selected value="0">Select Item</option>
+              {% for id, name, description, price, picture_url in Aitems %}
+                <option value = {{id}}>{{id}} {{name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col">
+            <div class="d-grid gap-2 col-12 mx-auto">
+              <button type="button" class="btn Button2", onclick="delete_assosiation()">Delete Item from Catalog</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </windows>
+    <script>
+      function new_catalog()
+      {
+        window.location.href = "http://localhost:50120/CatalogEditor/NewCatalog?catalog_name=" + document.getElementById('CatalogForm').value;
+        window.location.href = "http://localhost:50120/CatalogEditor";
+      } 
+      function new_item(){
+        var name = document.getElementById('ItemName').value;
+        var price = document.getElementById('ItemPrice').value;
+        var description = document.getElementById('ItemDescription').value;
+        var picture_url = document.getElementById('ItemPictureUrl').value;
+        var catalog_id = document.getElementById('Catalog_id').value;
+        window.location.href = "http://localhost:50120/CatalogEditor/NewItem?name="+name+"&price="+price+"&description="+description+"&picture_url="+picture_url+"&catalog_id="+catalog_id;
+        window.location.href = "http://localhost:50120/CatalogEditor/ItemList?catalog_id="+catalog_id;
+      }
+      function new_assosiation(){
+        var catalog_id = document.getElementById('ACatalogs').value;
+        var item_id = document.getElementById('AItems').value;
+        window.location.href = "http://localhost:50120/CatalogEditor/NewAssosiation?catalog_id="+catalog_id+"&item_id="+item_id;
+        window.location.href = "http://localhost:50120/CatalogEditor";
+      }
+      function delete_assosiation(){
+        var catalog_id = document.getElementById('ACatalogsDel').value;
+        var item_id = document.getElementById('AItemsDel').value;
+        window.location.href = "http://localhost:50120/CatalogEditor/DeleteAssosiation?catalog_id="+catalog_id+"&item_id="+item_id;
+        window.location.href = "http://localhost:50120/CatalogEditor";
+      }
+      function delete_item(){
+        var item_id = document.getElementById('DelItem').value;
+        window.location.href = "http://localhost:50120/CatalogEditor/DeleteItem?item_id="+item_id;
+        window.location.href = "http://localhost:50120/CatalogEditor";
+      }
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
+  </body>
+</html>

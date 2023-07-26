@@ -1,0 +1,53 @@
+:root{
+    --maincolor: #FFFFFF;
+    --subcolor: #8260b5;
+    --subcolor1: #37B235;
+}
+header{
+    height: 150px; 
+    background: var(--subcolor);
+    background: linear-gradient(180deg, var(--subcolor) 0%, var(--maincolor) 100%);
+}
+h1{
+    text-align: center;
+    margin-top: 30px;
+    font-family: Aldrich;
+    font-size: 60px;
+}
+h2{
+    font-family: Aldrich; 
+}
+.Button1{
+    margin-top: 10px;
+    background-color: var(--subcolor);
+}
+.Button2{
+    background-color: var(--subcolor);
+}
+windows{
+    padding: 20px;
+}
+.carusel{
+    width: 20px;
+    background-color: var(--subcolor);
+}
+.table{
+    margin-left: 20px;
+}
+.indicators{
+    bottom: -20px;
+    background-color: var(--subcolor);
+}
+.Row1{
+    margin-top: -20px;
+}
+.Row3{
+    margin-top: 30px;
+}
+.Row4{
+    margin-top: 10px;
+}
+.Row5{
+    margin-top: 10px;
+}
+

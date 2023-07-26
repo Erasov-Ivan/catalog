@@ -1,0 +1,20 @@
+version: "3"
+services:  
+   databases:
+    container_name: databases
+    image: postgres:14.8-alpine3.18
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "1777"
+      POSTGRES_DB: customname
+    volumes:
+      - ../2. Init Database:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+
+
+   backend:
+    container_name: backend
+    ports:
+      - '50120:50120'
+    build: .
